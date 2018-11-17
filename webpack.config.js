@@ -2,7 +2,7 @@
 const path = require("path");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
-const WebpackMd5Hash = require("webpack-md5-hash");
+//const WebpackMd5Hash = require("webpack-md5-hash");
 const CleanWebpackPlugin = require("clean-webpack-plugin");
 const fs = require("fs");
 
@@ -28,10 +28,22 @@ module.exports = {
   entry: { main: "./src/index.js" },
   output: {
     path: path.resolve(__dirname, "build"),
-    filename: "js/[name].[chunkhash].js"
+    filename: "js/index.js"
   },
+  devtool: "source-map",
   module: {
     rules: [
+      {
+        test: /\.(png|woff|woff2|eot|ttf|svg)$/,
+        use: [
+          {
+            loader: "url-loader",
+            options: {
+              limit: 100000
+            }
+          }
+        ]
+      },
       {
         test: /\.js$/,
         exclude: /node_modules/,
@@ -51,18 +63,18 @@ module.exports = {
       },
       {
         test: /\.html$/,
-        include: path.resolve(__dirname, "src/html/includes"),
+        include: path.resolve(__dirname, "src/html"),
         use: ["raw-loader"]
       }
     ]
   },
   plugins: [
-    new CleanWebpackPlugin("dist", {}),
+    new CleanWebpackPlugin("build", {}),
     new MiniCssExtractPlugin({
-      filename: "css/style.[contenthash].css"
-    }),
+      filename: "css/style.css"
+    })
 
-    new WebpackMd5Hash()
+    //new WebpackMd5Hash()
   ].concat(htmlPlugins),
   devServer: {
     host: "localhost",
