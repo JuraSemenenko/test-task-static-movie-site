@@ -28,7 +28,7 @@ const htmlPlugins = generateHtmlPlugins("./src/html");
 module.exports = {
   entry: { main: "./src/index.js" },
   output: {
-    path: path.resolve(__dirname, "docs"),
+    path: path.resolve(__dirname, "build"),
     filename: "js/index.js"
   },
   //devtool: "source-map",
@@ -73,7 +73,7 @@ module.exports = {
     ]
   },
   plugins: [
-    new CleanWebpackPlugin("docs", {}),
+    new CleanWebpackPlugin("build", {}),
     new MiniCssExtractPlugin({
       filename: "css/style.css"
     })
