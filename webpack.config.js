@@ -4,6 +4,7 @@ const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 //const WebpackMd5Hash = require("webpack-md5-hash");
 const CleanWebpackPlugin = require("clean-webpack-plugin");
+const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
 const fs = require("fs");
 
 function generateHtmlPlugins(templateDir) {
@@ -30,7 +31,10 @@ module.exports = {
     path: path.resolve(__dirname, "build"),
     filename: "js/index.js"
   },
-  devtool: "source-map",
+  //devtool: "source-map",
+  optimization: {
+    minimizer: [new OptimizeCSSAssetsPlugin({})]
+  },
   module: {
     rules: [
       {

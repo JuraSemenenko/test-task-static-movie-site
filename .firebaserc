@@ -1,0 +1,6 @@
+{
+  "projects": {
+    "build": "test-task-static-movie-site",
+    "default": "test-task-static-movie-site"
+  }
+}

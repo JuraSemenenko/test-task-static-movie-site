@@ -1,9 +1,9 @@
-//import "semantic-ui-css/semantic.css";
+import "semantic-ui-css/semantic.css";
 import "./css/style.css";
+//<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.css">
 const START_URL =
   "https://api.themoviedb.org/3/discover/movie?api_key=340af08aad86d2a893fef0bc25ea615d&language=en-US&sort_by=popularity.desc&include_adult=false&include_video=false&page=1";
-const API_KEY = "340af08aad86d2a893fef0bc25ea615d";
-const API_URL = "https://api.themoviedb.org/3/";
+
 const MONTH = [
   "",
   "January",
@@ -20,6 +20,7 @@ const MONTH = [
   "December"
 ];
 
+//Считываем ID для отправки запроса к API
 const MOVIE_ID =
   window.location.search !== ""
     ? window.location.search.split("=")[1]
@@ -28,7 +29,15 @@ const MOVIE_ID =
 const searchInput = document.getElementById("searchInput");
 const movieContainer = document.getElementById("result");
 
-// Вызываем при загрузке страницы
+// Вызываем при загрузке страницы с детальной информацией о фильме
+if (MOVIE_ID !== undefined) {
+  const URL = `https://api.themoviedb.org/3/movie/${MOVIE_ID}?api_key=340af08aad86d2a893fef0bc25ea615d&language=en-US`;
+  console.log(URL);
+  fetchMovieData(URL).then(data => {
+    console.log(data);
+    fillPageWithData(data);
+  });
+}
 
 searchInput !== null
   ? searchInput.addEventListener("input", event => {
@@ -42,8 +51,10 @@ searchInput !== null
     })
   : null;
 
+// Значение поля инпут
 const getValue = event => event.target.value;
 
+//Запрос к API при изменении значения в поле инпута
 const fetchMoviesData = URL =>
   fetch(URL, {
     headers: {
@@ -54,6 +65,7 @@ const fetchMoviesData = URL =>
     .then(response => response.json())
     .then(data => makeMovieTamplate(data.results));
 
+//Запрос к API за детальной информацией о фильме
 const fetchMovieData = URL => {
   return fetch(URL, {
     headers: {
@@ -63,28 +75,27 @@ const fetchMovieData = URL => {
   }).then(response => response.json());
 };
 
+//Добавление на страницу разметки с карточками фильмов.
 const makeMovieTamplate = data => {
   const html = data
     .map(movie => {
       return `
         <div class="card-container">
-        <div class="ui card">
-        <div class="image">
-        <img src="https://image.tmdb.org/t/p/w500${movie.poster_path}">
-        </div>
-        <div class="content">
-        <a class="header" id="${movie.id}" href="movie.html?id=${movie.id}">${
-        movie.title
-      }</a>
-        <div class="meta">
-        <span class="date">${movie.release_date}</span>
-        </div>
-        <div class="description">
-        ${movie.title}
-        </div>
-        </div>
-        
-        </div>
+        <a class="description" href="movie.html?id=${movie.id}">
+          <div class="ui card card-width">
+            <div class="image">
+              <img src="https://image.tmdb.org/t/p/w500${movie.poster_path}">
+            </div>
+            <div class="content">
+              <h4>${movie.title}</h4>
+              <div class="meta">
+                <span class="date">${movie.release_date
+                  .split("-")
+                  .join(" ")}</span>
+              </div>
+            </div>
+          </div>
+          </a>
         </div>
         `;
     })
@@ -92,6 +103,7 @@ const makeMovieTamplate = data => {
   movieContainer !== null ? (movieContainer.innerHTML = html) : null;
 };
 
+//Заполения страницы с детальной информацией о фильме данными с API
 const fillPageWithData = data => {
   const poster = document.getElementsByClassName("poster-img")[0];
   const backdrop = document.getElementsByClassName("backdrop-img")[0];
@@ -106,15 +118,14 @@ const fillPageWithData = data => {
   )[0];
   const slogan = document.getElementsByClassName("slogan")[0];
 
-  const avgRaiting = Math.ceil(+data.vote_average / 2);
   const releaseDate = data.release_date.split("-");
   const releaseDateTamplate = `${releaseDate[2]} ${MONTH[releaseDate[1]]} ${
-    releaseDate[1]
+    releaseDate[0]
   }`;
   const prodactionCountryList = data.production_countries
     .map(country => country.name)
     .join(", ");
-  console.log(avgRaiting);
+
   const genresList = data.genres.map(genre => genre.name).join(", ");
 
   poster.src = `https://image.tmdb.org/t/p/w500${data.poster_path}`;
@@ -129,13 +140,5 @@ const fillPageWithData = data => {
   slogan.innerHTML = data.tagline;
 };
 
-console.log(MOVIE_ID);
-if (MOVIE_ID !== undefined) {
-  const URL = `https://api.themoviedb.org/3/movie/${MOVIE_ID}?api_key=340af08aad86d2a893fef0bc25ea615d&language=en-US`;
-  console.log(URL);
-  fetchMovieData(URL).then(data => {
-    console.log(data);
-    fillPageWithData(data);
-  });
-}
+//Запрос данных о популярных фильмах при начальной загрузке главной страницы
 fetchMoviesData(START_URL);
