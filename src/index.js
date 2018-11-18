@@ -107,7 +107,13 @@ const fillPageWithData = data => {
   const slogan = document.getElementsByClassName("slogan")[0];
 
   const releaseDate = data.release_date.split("-");
-  const releaseDateTamplate = `${releaseDate[2]} ${MONTH[releaseDate[1]]} ${
+  console.log(
+    "release date",
+    +releaseDate[1],
+    MONTH[+releaseDate[1]],
+    releaseDate
+  );
+  const releaseDateTamplate = `${releaseDate[2]} ${MONTH[+releaseDate[1]]} ${
     releaseDate[0]
   }`;
   const prodactionCountryList = data.production_countries
