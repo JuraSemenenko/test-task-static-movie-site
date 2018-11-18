@@ -1,4 +1,5 @@
 // webpack v4
+const UglifyJsPlugin = require("uglifyjs-webpack-plugin");
 const path = require("path");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
@@ -33,7 +34,15 @@ module.exports = {
   },
   //devtool: "source-map",
   optimization: {
-    minimizer: [new OptimizeCSSAssetsPlugin({})]
+    minimizer: [
+      new UglifyJsPlugin(),
+      new OptimizeCSSAssetsPlugin({
+        cssProcessor: require("cssnano"),
+        cssProcessorPluginOptions: {
+          preset: ["default", { discardComments: { removeAll: true } }]
+        }
+      })
+    ]
   },
   module: {
     rules: [

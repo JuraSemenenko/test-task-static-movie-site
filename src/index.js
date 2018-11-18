@@ -1,4 +1,4 @@
-import "semantic-ui-css/semantic.css";
+import "semantic-ui-css/semantic.min.css";
 import "./css/style.css";
 //<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.css">
 const START_URL =
@@ -28,16 +28,6 @@ const MOVIE_ID =
 
 const searchInput = document.getElementById("searchInput");
 const movieContainer = document.getElementById("result");
-
-// Вызываем при загрузке страницы с детальной информацией о фильме
-if (MOVIE_ID !== undefined) {
-  const URL = `https://api.themoviedb.org/3/movie/${MOVIE_ID}?api_key=340af08aad86d2a893fef0bc25ea615d&language=en-US`;
-  console.log(URL);
-  fetchMovieData(URL).then(data => {
-    console.log(data);
-    fillPageWithData(data);
-  });
-}
 
 searchInput !== null
   ? searchInput.addEventListener("input", event => {
@@ -80,24 +70,22 @@ const makeMovieTamplate = data => {
   const html = data
     .map(movie => {
       return `
-        <div class="card-container">
-        <a class="description" href="movie.html?id=${movie.id}">
-          <div class="ui card card-width">
-            <div class="image">
-              <img src="https://image.tmdb.org/t/p/w500${movie.poster_path}">
-            </div>
-            <div class="content">
-              <h4>${movie.title}</h4>
-              <div class="meta">
-                <span class="date">${movie.release_date
-                  .split("-")
-                  .join(" ")}</span>
-              </div>
-            </div>
-          </div>
-          </a>
-        </div>
-        `;
+    <div class="card-container">
+    <a class="description" href="movie.html?id=${movie.id}">
+    <div class="ui card card-width">
+    <div class="image">
+    <img src="https://image.tmdb.org/t/p/w500${movie.poster_path}">
+    </div>
+    <div class="content">
+    <h4>${movie.title}</h4>
+    <div class="meta">
+    <span class="date">${movie.release_date.split("-").join(" ")}</span>
+      </div>
+      </div>
+      </div>
+      </a>
+      </div>
+      `;
     })
     .join(" ");
   movieContainer !== null ? (movieContainer.innerHTML = html) : null;
@@ -142,3 +130,13 @@ const fillPageWithData = data => {
 
 //Запрос данных о популярных фильмах при начальной загрузке главной страницы
 fetchMoviesData(START_URL);
+
+// Вызываем при загрузке страницы с детальной информацией о фильме
+if (MOVIE_ID !== undefined) {
+  const URL = `https://api.themoviedb.org/3/movie/${MOVIE_ID}?api_key=340af08aad86d2a893fef0bc25ea615d&language=en-US`;
+  console.log(URL);
+  fetchMovieData(URL).then(data => {
+    console.log(data);
+    fillPageWithData(data);
+  });
+}
